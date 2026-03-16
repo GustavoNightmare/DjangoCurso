@@ -2,9 +2,9 @@ from django.shortcuts import render
 from django.http import HttpResponse,HttpRequest, JsonResponse
 from .models import Project
 from .models import Task
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404 
 def index(request):
-    return HttpResponse("<h1>INDEX PAGINA HECHA CON DJANGO</h1>")
+    return render (request, 'index.html')
 
 def helloWorld(request, Username="Papucho",id=0):
     return HttpResponse(f'<h1>Hola mundo, digo digo , Hola {Username}, veo que tu id es {id} </h1>')
@@ -20,10 +20,14 @@ def Suma(request, username="Usuario"):
 
 def projects(request):
     proyecto = list(Project.objects.values())
-    return JsonResponse(proyecto, safe=False)
+    return render(request,"project.html")
+    #return JsonResponse(proyecto, safe=False)
 
 def tasks(request, id):
     ##task=Task.objects.get(id=id)
     task= get_object_or_404(Task,id=id)
-    return HttpResponse(f"La tarea que se selecionó es : {task.title }, con descripcion : {task.description}, y proyecto : {task.projects}")
+    return render (request, "task.html")
+    #return HttpResponse(f"La tarea que se selecionó es : {task.title }, con descripcion : {task.description}, y proyecto : {task.projects}")
 # Create your views here.
+def about(request,username="Gustavo"):
+    return render(request,"about.html")
