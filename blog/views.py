@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse,HttpRequest, JsonResponse
 from .models import Project
 from .models import Task
+from django.shortcuts import get_object_or_404
 def index(request):
     return HttpResponse("<h1>INDEX PAGINA HECHA CON DJANGO</h1>")
 
@@ -22,6 +23,7 @@ def projects(request):
     return JsonResponse(proyecto, safe=False)
 
 def tasks(request, id):
-    task=Task.objects.get(id=id)
-    return HttpResponse(f"La tarea que se selecionó es : {task.title }")
+    ##task=Task.objects.get(id=id)
+    task= get_object_or_404(Task,id=id)
+    return HttpResponse(f"La tarea que se selecionó es : {task.title }, con descripcion : {task.description}, y proyecto : {task.projects}")
 # Create your views here.
