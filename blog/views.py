@@ -38,8 +38,11 @@ def projects(request):
 
 def tasks(request, id):
     # task=Task.objects.get(id=id)
-    task = get_object_or_404(Task, id=id)
-    return render(request, "task.html")
+  # task = get_object_or_404(Task, id=id)
+    tasks = Task.objects.all()
+    return render(request, "task.html", {
+        'tasks': tasks
+    })
     # return HttpResponse(f"La tarea que se selecionó es : {task.title }, con descripcion : {task.description}, y proyecto : {task.projects}")
 # Create your views here.
 
