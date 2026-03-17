@@ -6,7 +6,12 @@ from django.shortcuts import get_object_or_404
 
 
 def index(request):
-    return render(request, 'index.html')
+    title = "Bienvenidos a mi blog"
+    pie = "Copyright 2024 Gustavo"
+    return render(request, 'index.html', {
+        'title': title,
+        'pie': pie
+    })
 
 
 def helloWorld(request, Username="Papucho", id=0):
@@ -23,8 +28,11 @@ def Suma(request, username="Usuario"):
 
 
 def projects(request):
-    proyecto = list(Project.objects.values())
-    return render(request, "project.html")
+   # proyecto = list(Project.objects.values())
+    projects = Project.objects.all()
+    return render(request, "project.html", {
+        'projects': projects
+    })
     # return JsonResponse(proyecto, safe=False)
 
 
