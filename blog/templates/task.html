@@ -4,6 +4,7 @@
         <th>Title</th>
         <th>Description</th>
         <th>Nombre Proyecto</th>
+        <th>Acciones</th>
     </tr>
     {% for task in tasks%}
 
@@ -11,6 +12,10 @@
         <th>{{ task.title }}</th>
         <th>{{ task.description }}</th>
         <th>{{ task.projects.name }}</th>
+        <th>
+            <button>Delete</button>
+            <button>Complete</button>
+        </th>
     </tr>
 
     {% endfor %}

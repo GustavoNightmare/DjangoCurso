@@ -36,7 +36,7 @@ def projects(request):
     # return JsonResponse(proyecto, safe=False)
 
 
-def tasks(request, id):
+def tasks(request):
     # task=Task.objects.get(id=id)
   # task = get_object_or_404(Task, id=id)
     tasks = Task.objects.all()
