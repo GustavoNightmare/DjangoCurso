@@ -1,9 +1,12 @@
-from django.shortcuts import render
+from urllib import request
+
+from django.shortcuts import redirect, render
 from django.http import HttpResponse, HttpRequest, JsonResponse
 from .models import Project
 from .models import Task
 from django.shortcuts import get_object_or_404
-from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
+from .forms import CreateNewTask
 import json
 
 
@@ -70,3 +73,22 @@ def delete_task(request, task_id):
         task.delete()
         return JsonResponse({'deleted': True})
     return JsonResponse({'error': 'Invalid request'}, status=400)
+
+
+@ensure_csrf_cookie
+def create_task(request):
+    if request.method == 'POST':
+        print(request.POST['title'])
+        print(request.POST['description'])
+        #
+        Task.objects.create(
+            title=request.POST['title'],
+            description=request.POST['description'],
+            projects_id=2
+        )
+        return redirect('/tasks/')
+    else:
+        return render(request, "create_task.html",
+                      {
+                          "form": CreateNewTask()
+                      })
