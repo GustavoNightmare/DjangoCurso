@@ -1,0 +1,42 @@
+/* Espaciado entre botones */
+.table .btn {
+    margin-right: 4px;
+    margin-bottom: 4px;
+}
+
+/* Un toque de redondeado en la tabla */
+.table th, .table td {
+    vertical-align: middle;
+}
+
+/* Sombra ligera en la tarjeta */
+.card {
+    border-radius: .75rem;
+    border: none;
+    box-shadow: 0 .125rem .25rem rgba(0,0,0,.075);
+}
+
+/* Animación al eliminar fila */
+tr.fade-out {
+    transition: opacity .4s ease-out;
+    opacity: 0;
+}
+
+/* Colores para los badges */
+.badge.bg-warning.text-dark {
+    background-color: #ffc107 !important;
+    color: #000 !important;
+}
+
+/* Hover effect for table rows */
+.table-hover tbody tr:hover {
+    background-color: rgba(0,0,0,.03);
+}
+
+/* Center content vertically */
+.center-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
