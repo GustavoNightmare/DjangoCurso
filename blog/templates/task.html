@@ -1,3 +1,12 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Tareas</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+{% csrf_token %}
 <h1>Tareas</h1>
 <table border="2">
     <tr>
@@ -5,19 +14,109 @@
         <th>Description</th>
         <th>Nombre Proyecto</th>
         <th>Acciones</th>
+        <th>Estado</th>
     </tr>
     {% for task in tasks%}
 
-    <tr>
+    <tr id="task-{{ task.id }}">
         <th>{{ task.title }}</th>
         <th>{{ task.description }}</th>
         <th>{{ task.projects.name }}</th>
         <th>
-            <button>Delete</button>
-            <button>Complete</button>
+            <button class="delete-btn" data-task-id="{{ task.id }}">Delete</button>
+            <button class="complete-btn" data-task-id="{{ task.id }}">
+                {% if task.done %}Marcar como Pendiente❌{% else %}Complete✅{% endif %}
+            </button>
+        </th>
+        <th class="status-cell">
+            {%if task.done == False %}
+            Tarea Pendiente❌
+            {%else%}
+            Tarea Completada✅
+            {%endif%}
         </th>
     </tr>
 
     {% endfor %}
 </table>
 <td>{{ task.project }}</td>
+
+<script>
+$(document).ready(function() {
+    // Get CSRF token from the meta tag or the form
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    $('.complete-btn').click(function() {
+        var taskId = $(this).data('task-id');
+        var button = $(this);
+        var statusCell = $('#task-' + taskId + ' .status-cell');
+        
+        $.ajax({
+            url: '/toggle_task/' + taskId + '/',
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            success: function(response) {
+                if (response.done) {
+                    statusCell.html('Tarea Completada✅');
+                    button.text('Marcar como Pendiente❌');
+                } else {
+                    statusCell.html('Tarea Pendiente❌');
+                    button.text('Complete✅');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.log('Error:', error);
+            }
+        });
+    });
+    
+    // Handle delete button click
+    $('.delete-btn').click(function() {
+        var taskId = $(this).data('task-id');
+        var row = $('#task-' + taskId);
+        
+        // Show confirmation dialog
+        if (confirm('¿Seguro que deseas eliminar esta tarea?')) {
+            $.ajax({
+                url: '/delete_task/' + taskId + '/',
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                success: function(response) {
+                    if (response.deleted) {
+                        // Remove the row from the DOM
+                        row.fadeOut(200, function() {
+                            $(this).remove();
+                        });
+                    } else {
+                        alert('No se pudo eliminar la tarea.');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.log('Delete error:', error);
+                    alert('Error al intentar borrar la tarea.');
+                }
+            });
+        }
+    });
+});
+</script>
+</body>
+</html>

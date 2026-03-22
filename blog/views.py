@@ -3,6 +3,8 @@ from django.http import HttpResponse, HttpRequest, JsonResponse
 from .models import Project
 from .models import Task
 from django.shortcuts import get_object_or_404
+from django.views.decorators.csrf import csrf_exempt
+import json
 
 
 def index(request):
@@ -49,3 +51,22 @@ def tasks(request):
 
 def about(request, username="Gustavo"):
     return render(request, "about.html")
+
+
+@csrf_exempt
+def toggle_task(request, task_id):
+    if request.method == 'POST':
+        task = get_object_or_404(Task, id=task_id)
+        task.done = not task.done
+        task.save()
+        return JsonResponse({'done': task.done})
+    return JsonResponse({'error': 'Invalid request'}, status=400)
+
+
+@csrf_exempt
+def delete_task(request, task_id):
+    if request.method == 'POST':
+        task = get_object_or_404(Task, id=task_id)
+        task.delete()
+        return JsonResponse({'deleted': True})
+    return JsonResponse({'error': 'Invalid request'}, status=400)
